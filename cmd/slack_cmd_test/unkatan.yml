@@ -1,0 +1,27 @@
+api:
+  auth_tokens:
+  - xxx
+dump_and_exit: false
+genie:
+  key: xxx
+http:
+  listen: 127.0.0.1:8080
+katan:
+  slack_announce_channels:
+  - xxx
+  slack_warn_channels:
+  - xxx
+redis:
+  addr: 127.0.0.1:6379
+  password: somepass
+schedule:
+  special:
+  - 21.01.2021
+  exclude:
+  - 01.05.2021
+slack:
+  testrun: true
+  bot_token: xxx
+  permitted_users:
+  - test2
+  sign_secret: xxx

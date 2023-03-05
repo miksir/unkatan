@@ -1,0 +1,28 @@
+api:
+  auth_tokens:
+  - xxxxxx
+dump_and_exit: false
+genie:
+  key: xxxxxxx
+http:
+  listen: 127.0.0.1:8080
+katan:
+  slack_announce_channels:
+  - xxxxxx
+  slack_warn_channels:
+  - xxxxxx
+redis:
+  addr: 127.0.0.1:6379
+  password: xxxxxx
+schedule:
+  special:
+  - 17.12.2020
+  - 18.12.2020
+  - 21.01.2021
+slack:
+  bot_token: xoxb-xxxxxxx
+  permitted_users:
+  - miksir
+  - test
+  sign_secret: xxxxxxxxxx
+

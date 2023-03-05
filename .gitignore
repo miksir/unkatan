@@ -1,0 +1,9 @@
+/.git.old
+/unkatan
+/.idea
+/unkatan.yml
+*.swp
+/bin
+/.env
+/vendor
+/deploy

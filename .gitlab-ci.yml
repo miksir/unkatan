@@ -1,0 +1,67 @@
+---
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+Tests:
+  stage: test
+  image: golang:1.14
+  tags:
+    - docker
+  script:
+    - echo -e "machine gitlab.private.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > ~/.netrc
+    - go mod vendor
+    - go test ./pkg/...
+    - go run cmd/slack_cmd_test/*.go --config cmd/slack_cmd_test/unkatan.yml
+  cache:
+    key: global_cache
+    paths:
+      - vendor/
+
+Container building:
+  stage: build
+  image: docker:19.03.14-git
+  services:
+   - name: docker:19.03.14-dind
+     alias: docker
+  tags:
+    - docker
+  only:
+    - tags
+  variables:
+    IMAGE_TAG: ${CI_COMMIT_REF_SLUG}
+  before_script:
+    - docker login ${CI_REGISTRY} -u gitlab-ci-token -p ${CI_JOB_TOKEN}
+  script:
+    - docker build --force-rm --build-arg VER=${CI_COMMIT_REF_SLUG} --build-arg PRIVATE_USER=gitlab-ci-token --build-arg PRIVATE_PASSWORD=${CI_JOB_TOKEN} --tag ${CI_REGISTRY_IMAGE}:${IMAGE_TAG} .
+    - docker push ${CI_REGISTRY_IMAGE}:${IMAGE_TAG}
+  cache:
+    key: global_cache
+    paths:
+      - vendor/
+
+Deploy:
+  stage: deploy
+  image: ssh:20.04
+  tags:
+    - docker
+  only:
+    - tags
+  allow_failure: false
+  when: manual
+  environment:
+    name: production
+    url: http://slackbot1b.private.com/unkatan/
+  resource_group: production
+  script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - ssh gitlab-runner@${DEPLOY_HOST} -- unkatan $CI_COMMIT_REF_SLUG $DOCKER_USER $DOCKER_PASS < <(env | grep '^APP_' | sed -e 's/^APP_//')

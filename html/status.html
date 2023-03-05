@@ -1,0 +1,54 @@
+<html lang="ru">
+<head>
+    <meta name="referrer" content="no-referrer">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>UnKatan status</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script></head>
+<body>
+<header class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">UnKatan</a>
+</header>
+<main class="container mt-2">
+    <div class="row">
+        <div class="col">
+            <div>
+                <h2>Статус деплоя</h2>
+                <p>
+                    {{.DeployStatusName}} by {{.DeployChangedBy}}, причина: {{.DeployChangeReason}}
+                </p>
+            </div>
+            <div>
+                <h2>История переключений</h2>
+                <div>
+                    <div class="card-title">
+                        <a class="btn btn-primary" data-toggle="collapse" href="#historyList" role="button" aria-expanded="false" aria-controls="historyList">
+                            Развернуть/Свернуть
+                        </a>
+                    </div>
+                    <div class="card-text collapse" id="historyList">
+                        {{range .DeployHistory}}
+                            {{.When.Format "2006-01-02 15:04:05"}} {{.StatusName}} by {{.ChangedBy}}, причина: {{.ChangeReason}}<br>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h2>Дежурный инженер</h2>
+            <div class="card card-body">
+                <h3>SRE</h3>
+                <p>{{.SreDuty.FullName}}<br>{{.SreDuty.Phone}}</p>
+                <h3>Телефония</h3>
+                <p>Кирилл Соломатин</p>
+                <h3>Поддержка</h3>
+                <p>{{.SupportDuty.FullName}}<br>{{.SupportDuty.Phone}}</p>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
