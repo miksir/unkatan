@@ -4,4 +4,6 @@ jobs:
   test_job:
     name: test run
     runs-on: self-hosted
-    run: id
+    steps:
+    - name: step 1
+      run: id
